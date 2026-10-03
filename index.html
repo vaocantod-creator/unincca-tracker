@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UNINCCA Tracker — Física Mecánica</title>
+<title>UNINCCA Tracker</title>
 <style>
   :root {
     --bg: #0f1117;
@@ -22,10 +22,11 @@
     background: radial-gradient(circle at 20% 0%, #1b2030 0%, var(--bg) 55%);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--text);
-    padding: 40px 20px 60px;
   }
-  .wrap { max-width: 880px; margin: 0 auto; }
-  header { text-align: center; margin-bottom: 36px; }
+  .topbar {
+    text-align: center;
+    padding: 28px 20px 10px;
+  }
   .badge {
     display: inline-block;
     font-size: 12px;
@@ -35,21 +36,49 @@
     background: rgba(255,255,255,0.05);
     padding: 6px 14px;
     border-radius: 999px;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
   }
-  h1 {
-    font-size: 2rem;
-    margin: 0 0 8px;
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding: 10px 20px 28px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .nav-btn {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--muted);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .nav-btn:hover { color: var(--text); border-color: var(--accent2); }
+  .nav-btn.active {
+    color: #0f1117;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-color: transparent;
+    font-weight: 600;
+  }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px 60px; }
+  .course-panel h1 {
+    font-size: 1.9rem;
+    margin: 10px 0 4px;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  header p { color: var(--muted); margin: 0; }
+  .subtitle { color: var(--muted); margin: 0 0 28px; }
 
   .section { margin-bottom: 32px; }
   .section h2 {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: var(--text);
     border-left: 3px solid var(--accent2);
     padding-left: 10px;
@@ -63,25 +92,27 @@
     overflow: hidden;
   }
 
-  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
   th, td { padding: 12px 16px; text-align: left; }
   th {
     color: var(--muted);
     font-weight: 500;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     border-bottom: 1px solid rgba(255,255,255,0.08);
   }
   tbody tr:not(:last-child) td { border-bottom: 1px solid rgba(255,255,255,0.05); }
   tbody tr:hover { background: rgba(255,255,255,0.03); }
+  td.empty { color: var(--muted); font-style: italic; }
 
   .pill {
     display: inline-block;
-    font-size: 12px;
+    font-size: 11.5px;
     padding: 4px 10px;
     border-radius: 999px;
     font-weight: 600;
+    white-space: nowrap;
   }
   .pill.ok { background: rgba(110,231,183,0.12); color: var(--accent); border: 1px solid rgba(110,231,183,0.3); }
   .pill.warn { background: rgba(251,191,36,0.12); color: var(--warn); border: 1px solid rgba(251,191,36,0.3); }
@@ -90,74 +121,320 @@
   a.rec-link { color: var(--accent2); text-decoration: none; }
   a.rec-link:hover { text-decoration: underline; }
 
+  .note { font-size: 0.8rem; color: var(--muted); margin-top: 10px; padding: 0 4px; }
+
   footer {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 10px;
+    padding-bottom: 30px;
     font-size: 12px;
     color: var(--muted);
-  }
-  .note {
-    font-size: 0.82rem;
-    color: var(--muted);
-    margin-top: 10px;
-    padding: 0 4px;
   }
 </style>
 </head>
 <body>
+
+<div class="topbar">
+  <span class="badge">UNINCCA · Tracker Académico</span>
+</div>
+
+<nav id="nav">
+<button class="nav-btn active" data-target="panel-FISICA_MECANICA" onclick="showPanel('FISICA_MECANICA')">Física Mecánica</button>
+<button class="nav-btn" data-target="panel-ALGEBRA_LINEAL" onclick="showPanel('ALGEBRA_LINEAL')">Álgebra Lineal</button>
+<button class="nav-btn" data-target="panel-CALCULO_DIFERENCIAL" onclick="showPanel('CALCULO_DIFERENCIAL')">Cálculo Diferencial</button>
+<button class="nav-btn" data-target="panel-LAB_FISICA_MECANICA" onclick="showPanel('LAB_FISICA_MECANICA')">Laboratorio de Física Mecánica</button>
+<button class="nav-btn" data-target="panel-BASES_DE_DATOS_I" onclick="showPanel('BASES_DE_DATOS_I')">Bases de Datos I</button>
+<button class="nav-btn" data-target="panel-ESTRUCTURA_DE_DATOS_I" onclick="showPanel('ESTRUCTURA_DE_DATOS_I')">Estructura de Datos I</button>
+<button class="nav-btn" data-target="panel-PROGRAMACION_BASICA" onclick="showPanel('PROGRAMACION_BASICA')">Programación Básica</button>
+</nav>
+
 <div class="wrap">
 
-  <header>
-    <span class="badge">UNINCCA · Tracker Académico — Piloto</span>
-    <h1>Física Mecánica</h1>
-    <p>Estado de asignaciones y grabaciones de clase</p>
-  </header>
+<section class="course-panel" id="panel-FISICA_MECANICA" style="display:block">
+  <h1>Física Mecánica</h1>
+  <p class="subtitle">Estado de asignaciones y grabaciones de clase</p>
 
   <div class="section">
     <h2>📋 Estado de asignaciones</h2>
     <div class="card">
       <table>
-        <thead>
-          <tr><th>Actividad</th><th>Cierre</th><th>Estado</th></tr>
-        </thead>
+        <thead><tr><th>Actividad</th><th>Cierre</th><th>Estado</th></tr></thead>
         <tbody>
-          <tr><td>Laboratorios sobre Movimientos</td><td>20 sep 2026</td><td><span class="pill ok">Entregado · 5.00/50.00</span></td></tr>
-          <tr><td>QUIZ Primer Corte</td><td>27 sep 2026</td><td><span class="pill ok">Completado</span></td></tr>
-          <tr><td>Actividad Aplicada 1 — Primer Corte</td><td>27 sep 2026</td><td><span class="pill ok">Entregado y calificado</span></td></tr>
-          <tr><td>Actividad Aplicada 2 — Primer Corte</td><td>4 oct 2026</td><td><span class="pill warn">⚠ Archivo cargado, falta confirmar envío</span></td></tr>
-          <tr><td>Parcial Primer Corte</td><td>4 oct 2026</td><td><span class="pill pending">Pendiente</span></td></tr>
-          <tr><td>Actividad Aplicada 1 — Segundo Corte</td><td>—</td><td><span class="pill pending">Aún no habilitada</span></td></tr>
-          <tr><td>Actividad Aplicada 2 — Segundo Corte</td><td>—</td><td><span class="pill pending">Aún no habilitada</span></td></tr>
-          <tr><td>Parcial / Quiz Segundo Corte</td><td>—</td><td><span class="pill pending">Aún no habilitada</span></td></tr>
-          <tr><td>Actividades y Parcial Tercer Corte</td><td>—</td><td><span class="pill pending">Sin contenido publicado</span></td></tr>
+        <tr><td>Laboratorios sobre Movimientos</td><td>20 sep 2026</td><td><span class="pill ok">✅ Entregado · 5.00/50.00</span></td></tr>
+<tr><td>QUIZ Primer Corte</td><td>27 sep 2026</td><td><span class="pill ok">✅ Completado</span></td></tr>
+<tr><td>Actividad Aplicada 1 — Primer Corte</td><td>27 sep 2026</td><td><span class="pill ok">✅ Entregado y calificado</span></td></tr>
+<tr><td>Actividad Aplicada 2 — Primer Corte</td><td>4 oct 2026</td><td><span class="pill warn">⚠ Archivo cargado, falta confirmar envío</span></td></tr>
+<tr><td>Parcial Primer Corte</td><td>4 oct 2026</td><td><span class="pill pending">⏳ Pendiente</span></td></tr>
+<tr><td>Actividad Aplicada 1 — Segundo Corte</td><td>—</td><td><span class="pill pending">⏳ Aún no habilitada</span></td></tr>
+<tr><td>Actividad Aplicada 2 — Segundo Corte</td><td>—</td><td><span class="pill pending">⏳ Aún no habilitada</span></td></tr>
+<tr><td>Parcial / Quiz Segundo Corte</td><td>—</td><td><span class="pill pending">⏳ Aún no habilitada</span></td></tr>
+<tr><td>Actividades y Parcial Tercer Corte</td><td>—</td><td><span class="pill pending">⏳ Sin contenido publicado</span></td></tr>
         </tbody>
       </table>
     </div>
-    <p class="note">Última revisión: datos extraídos directamente de Moodle el 1 de octubre de 2026.</p>
   </div>
 
   <div class="section">
-    <h2>🎥 Grabaciones de clase (Martes)</h2>
+    <h2>🎥 Grabaciones de clase</h2>
     <div class="card">
       <table>
-        <thead>
-          <tr><th>Fecha</th><th>Duración</th><th>Enlace</th></tr>
-        </thead>
+        <thead><tr><th>Fecha</th><th>Duración</th><th>Enlace</th></tr></thead>
         <tbody>
-          <tr><td>8 sep 2026</td><td>2:03:41</td><td><a class="rec-link" href="https://drive.google.com/file/d/1LKZDQz76XIPDy7ucgqPYLSnCr9dgdJxo/view" target="_blank">Ver en Drive →</a></td></tr>
-          <tr><td>15 sep 2026</td><td>1:29:32</td><td><a class="rec-link" href="https://drive.google.com/file/d/19AA1fflLBCWN52o4LnlprWSyk9aVMSiK/view" target="_blank">Ver en Drive →</a></td></tr>
-          <tr><td>22 sep 2026</td><td>1:28:39</td><td><a class="rec-link" href="https://drive.google.com/file/d/1UHbJJB9mfh6Bhq5qoE_xYjO-ENhwoEpF/view" target="_blank">Ver en Drive →</a></td></tr>
-          <tr><td>29 sep 2026</td><td>1:26:16</td><td><a class="rec-link" href="https://drive.google.com/file/d/1X-E28qtBL7T2IgwPn1Ae7RdAMLcMT9Gu/view" target="_blank">Ver en Drive →</a></td></tr>
+        <tr><td>8 sep 2026</td><td>2:03:41</td><td><a class="rec-link" href="https://drive.google.com/file/d/1LKZDQz76XIPDy7ucgqPYLSnCr9dgdJxo/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>15 sep 2026</td><td>1:29:32</td><td><a class="rec-link" href="https://drive.google.com/file/d/19AA1fflLBCWN52o4LnlprWSyk9aVMSiK/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>22 sep 2026</td><td>1:28:39</td><td><a class="rec-link" href="https://drive.google.com/file/d/1UHbJJB9mfh6Bhq5qoE_xYjO-ENhwoEpF/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>29 sep 2026</td><td>1:26:16</td><td><a class="rec-link" href="https://drive.google.com/file/d/1X-E28qtBL7T2IgwPn1Ae7RdAMLcMT9Gu/view" target="_blank">Ver en Drive →</a></td></tr>
         </tbody>
       </table>
     </div>
     <p class="note">Resúmenes automáticos de contenido: próxima fase.</p>
   </div>
+</section>
 
-  <footer>
-    unincca-tracker · Piloto manual · Próximamente: más materias y actualización automática
-  </footer>
+
+<section class="course-panel" id="panel-ALGEBRA_LINEAL" style="display:none">
+  <h1>Álgebra Lineal</h1>
+  <p class="subtitle">Estado de asignaciones y grabaciones de clase</p>
+
+  <div class="section">
+    <h2>📋 Estado de asignaciones</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>Actividad</th><th>Cierre</th><th>Estado</th></tr></thead>
+        <tbody>
+        <tr><td>Actividad Aplicada 1 - Primer Corte</td><td>miércoles, 30 de septiembre de 2026, 23:40</td><td><span class="pill ok">✅ Entregado, pendiente de calificar</span></td></tr>
+<tr><td>PARCIAL PRIMER CORTE</td><td>sábado, 3 de octubre de 2026, 23:59</td><td><span class="pill ok">✅ Calificado: 5.00 de 5.00 (100%)</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🎥 Grabaciones de clase</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>Fecha</th><th>Duración</th><th>Enlace</th></tr></thead>
+        <tbody>
+        <tr><td>jueves, 1 de octubre de 2026</td><td>1:03:31</td><td><a class="rec-link" href="https://drive.google.com/file/d/1ybviE-rIrdjoZf5a4kYyv_CemQ_V78h7/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>jueves, 24 de septiembre de 2026</td><td>1:45:12</td><td><a class="rec-link" href="https://drive.google.com/file/d/1BOh23oVxMHN2JRyESsfxlnlXnmG0N1dv/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>viernes, 18 de septiembre de 2026</td><td>1:27:34</td><td><a class="rec-link" href="https://drive.google.com/file/d/1eIJ07rWUJoccN6xmRqIv4lk7wKHGUAGQ/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>jueves, 10 de septiembre de 2026</td><td>2:05:47</td><td><a class="rec-link" href="https://drive.google.com/file/d/1rKx1Cp_Y4EAyzzCF_tzY-cSSn0V96apb/view" target="_blank">Ver en Drive →</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Resúmenes automáticos de contenido: próxima fase.</p>
+  </div>
+</section>
+
+
+<section class="course-panel" id="panel-CALCULO_DIFERENCIAL" style="display:none">
+  <h1>Cálculo Diferencial</h1>
+  <p class="subtitle">Estado de asignaciones y grabaciones de clase</p>
+
+  <div class="section">
+    <h2>📋 Estado de asignaciones</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>Actividad</th><th>Cierre</th><th>Estado</th></tr></thead>
+        <tbody>
+        <tr><td>Actividad Aplicada 1 - Primer Corte</td><td>—</td><td><span class="pill pending">⏳ Sin envíos aún</span></td></tr>
+<tr><td>Actividad Aplicada 2 - Primer Corte</td><td>—</td><td><span class="pill pending">⏳ Sin envíos aún</span></td></tr>
+<tr><td>PARCIAL PRIMER CORTE</td><td>—</td><td><span class="pill pending">⏳ Sin contenido publicado</span></td></tr>
+<tr><td>QUIZ PRIMER CORTE</td><td>—</td><td><span class="pill pending">⏳ Sin contenido publicado</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🎥 Grabaciones de clase</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>Fecha</th><th>Duración</th><th>Enlace</th></tr></thead>
+        <tbody>
+        <tr><td>martes, 29 de septiembre de 2026</td><td>1:54:08</td><td><a class="rec-link" href="https://drive.google.com/file/d/1rGXegziiLKaYOGSKXIQTNRVmLYkuAVWJ/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>martes, 22 de septiembre de 2026</td><td>1:27:20</td><td><a class="rec-link" href="https://drive.google.com/file/d/1RA3w1g9f23gVHmHYRv8lVn_ZC-dpnduN/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>miércoles, 16 de septiembre de 2026</td><td>1:38:43</td><td><a class="rec-link" href="https://drive.google.com/file/d/1jpACCVh69E-qft0bTir0rkmrHAEY9OCP/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>martes, 15 de septiembre de 2026</td><td>1:32:38</td><td><a class="rec-link" href="https://drive.google.com/file/d/1jbKKoJWMuvzE2_1H2EF01BGGk364o8bk/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>miércoles, 9 de septiembre de 2026</td><td>2:00:32</td><td><a class="rec-link" href="https://drive.google.com/file/d/1QTV1bg5CThAz1s81HYIEgx6LivfrbSvW/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>miércoles, 23 de septiembre de 2026</td><td>1:07:49</td><td><a class="rec-link" href="https://drive.google.com/file/d/1MIcAH5ZBM-d_gp6Xeq6m4qEfQVO6fRX3/view" target="_blank">Ver en Drive →</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Resúmenes automáticos de contenido: próxima fase.</p>
+  </div>
+</section>
+
+
+<section class="course-panel" id="panel-LAB_FISICA_MECANICA" style="display:none">
+  <h1>Laboratorio de Física Mecánica</h1>
+  <p class="subtitle">Estado de asignaciones y grabaciones de clase</p>
+
+  <div class="section">
+    <h2>📋 Estado de asignaciones</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>Actividad</th><th>Cierre</th><th>Estado</th></tr></thead>
+        <tbody>
+        <tr><td>Actividad Aplicada 1 - Primer Corte</td><td>—</td><td><span class="pill pending">⏳ Sin envíos aún</span></td></tr>
+<tr><td>Actividad Aplicada 2 - Primer Corte</td><td>—</td><td><span class="pill pending">⏳ Sin envíos aún</span></td></tr>
+<tr><td>PARCIAL PRIMER CORTE</td><td>—</td><td><span class="pill pending">⏳ Sin contenido publicado</span></td></tr>
+<tr><td>QUIZ PRIMER CORTE</td><td>—</td><td><span class="pill pending">⏳ Sin contenido publicado</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🎥 Grabaciones de clase</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>Fecha</th><th>Duración</th><th>Enlace</th></tr></thead>
+        <tbody>
+        <tr><td>jueves, 1 de octubre de 2026</td><td>2:04:55</td><td><a class="rec-link" href="https://drive.google.com/file/d/1YlnZSJRgDloyLBtOtfkKNzWAJw6Hg1xc/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>jueves, 24 de septiembre de 2026</td><td>1:41:36</td><td><a class="rec-link" href="https://drive.google.com/file/d/1L3PmGtEw4Mruv49aJtbxJq7XHbWjc-zW/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>miércoles, 23 de septiembre de 2026</td><td>0:20</td><td><a class="rec-link" href="https://drive.google.com/file/d/1j4yZycUWypOEJy6hl_GGZ7P2ekP3Dk0W/view" target="_blank">Ver en Drive →</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Resúmenes automáticos de contenido: próxima fase.</p>
+  </div>
+</section>
+
+
+<section class="course-panel" id="panel-BASES_DE_DATOS_I" style="display:none">
+  <h1>Bases de Datos I</h1>
+  <p class="subtitle">Estado de asignaciones y grabaciones de clase</p>
+
+  <div class="section">
+    <h2>📋 Estado de asignaciones</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>Actividad</th><th>Cierre</th><th>Estado</th></tr></thead>
+        <tbody>
+        <tr><td>Actividad juego</td><td>viernes, 25 de septiembre de 2026, 00:00</td><td><span class="pill ok">✅ Entregado, pendiente de calificar</span></td></tr>
+<tr><td>Juego entidad relación</td><td>viernes, 2 de octubre de 2026, 00:00</td><td><span class="pill ok">✅ Entregado, pendiente de calificar</span></td></tr>
+<tr><td>Diagrama ejercicio</td><td>viernes, 2 de octubre de 2026, 00:00</td><td><span class="pill ok">✅ Entregado, pendiente de calificar</span></td></tr>
+<tr><td>Actividad Aplicada 1 - Primer Corte</td><td>—</td><td><span class="pill pending">⏳ Sin envíos aún</span></td></tr>
+<tr><td>Actividad Aplicada 2 - Primer Corte</td><td>—</td><td><span class="pill pending">⏳ Sin envíos aún</span></td></tr>
+<tr><td>PARCIAL PRIMER CORTE</td><td>domingo, 4 de octubre de 2026, 23:59</td><td><span class="pill pending">⏳ Sin contenido publicado</span></td></tr>
+<tr><td>QUIZ PRIMER CORTE</td><td>—</td><td><span class="pill ok">✅ Calificado: 5.00 de 5.00 (100%)</span></td></tr>
+<tr><td>Parcial de Bases de Datos</td><td>viernes, 9 de octubre de 2026, 00:00</td><td><span class="pill pending">⏳ Sin envíos aún · cierra viernes, 9 de octubre de 2026, 00:00</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🎥 Grabaciones de clase</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>Fecha</th><th>Duración</th><th>Enlace</th></tr></thead>
+        <tbody>
+        <tr><td>viernes, 2 de octubre de 2026</td><td>2:08:19</td><td><a class="rec-link" href="https://drive.google.com/file/d/1fxN4EArAE93NJq-74vjE0fzYxjyzjHks/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>lunes, 28 de septiembre de 2026</td><td>1:56:44</td><td><a class="rec-link" href="https://drive.google.com/file/d/1Zi45IwEUk5N0UG_qVmPio9sZw9R42E26/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>viernes, 25 de septiembre de 2026</td><td>2:01:47</td><td><a class="rec-link" href="https://drive.google.com/file/d/1lPtJc_xAa61ZZyXtliKoCbgfwZlFgrHO/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>martes, 22 de septiembre de 2026</td><td>1:51:14</td><td><a class="rec-link" href="https://drive.google.com/file/d/1zf7_b5Pp0aOBRtHXIx8tb_54RXKgSa2D/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>viernes, 18 de septiembre de 2026</td><td>1:34:32</td><td><a class="rec-link" href="https://drive.google.com/file/d/1wbhXwov2ZrmTJtjicFUckfV7pcxN5mOO/view" target="_blank">Ver en Drive →</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Resúmenes automáticos de contenido: próxima fase.</p>
+  </div>
+</section>
+
+
+<section class="course-panel" id="panel-ESTRUCTURA_DE_DATOS_I" style="display:none">
+  <h1>Estructura de Datos I</h1>
+  <p class="subtitle">Estado de asignaciones y grabaciones de clase</p>
+
+  <div class="section">
+    <h2>📋 Estado de asignaciones</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>Actividad</th><th>Cierre</th><th>Estado</th></tr></thead>
+        <tbody>
+        <tr><td>De la lectura a la lógica</td><td>viernes, 2 de octubre de 2026, 00:00</td><td><span class="pill ok">✅ Entregado, pendiente de calificar</span></td></tr>
+<tr><td>Juego condicionales</td><td>viernes, 2 de octubre de 2026, 00:00</td><td><span class="pill ok">✅ Entregado, pendiente de calificar</span></td></tr>
+<tr><td>Actividad Aplicada 1 - Primer Corte</td><td>—</td><td><span class="pill pending">⏳ Sin envíos aún</span></td></tr>
+<tr><td>Actividad Aplicada 2 - Primer Corte</td><td>—</td><td><span class="pill pending">⏳ Sin envíos aún</span></td></tr>
+<tr><td>PARCIAL PRIMER CORTE</td><td>domingo, 4 de octubre de 2026, 23:59</td><td><span class="pill ok">✅ Calificado: 5.00 de 5.00 (100%)</span></td></tr>
+<tr><td>QUIZ PRIMER CORTE</td><td>—</td><td><span class="pill pending">⏳ Sin contenido publicado</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🎥 Grabaciones de clase</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>Fecha</th><th>Duración</th><th>Enlace</th></tr></thead>
+        <tbody>
+        <tr><td>viernes, 2 de octubre de 2026</td><td>2:09:19</td><td><a class="rec-link" href="https://drive.google.com/file/d/1b0xMNhqZonkldkJ0DcQoZYBFG8e9BpP-/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>viernes, 25 de septiembre de 2026</td><td>2:27:33</td><td><a class="rec-link" href="https://drive.google.com/file/d/1LsTh0Ck-DWb6u3r5yjXN7ldMSU3LTr7L/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>viernes, 18 de septiembre de 2026</td><td>2:09:05</td><td><a class="rec-link" href="https://drive.google.com/file/d/1wcXBgkmLCjQI8lJQ2OhZIYx8VTtm3sNM/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>viernes, 11 de septiembre de 2026</td><td>1:39:15</td><td><a class="rec-link" href="https://drive.google.com/file/d/1N4V15dsNGIAAqWLfWkcJiRWNYLF488Sq/view" target="_blank">Ver en Drive →</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Resúmenes automáticos de contenido: próxima fase.</p>
+  </div>
+</section>
+
+
+<section class="course-panel" id="panel-PROGRAMACION_BASICA" style="display:none">
+  <h1>Programación Básica</h1>
+  <p class="subtitle">Estado de asignaciones y grabaciones de clase</p>
+
+  <div class="section">
+    <h2>📋 Estado de asignaciones</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>Actividad</th><th>Cierre</th><th>Estado</th></tr></thead>
+        <tbody>
+        <tr><td>Actividad 1</td><td>miércoles, 23 de septiembre de 2026, 23:00</td><td><span class="pill ok">✅ Entregado, pendiente de calificar</span></td></tr>
+<tr><td>Actividad 2</td><td>miércoles, 23 de septiembre de 2026, 23:00</td><td><span class="pill ok">✅ Entregado, pendiente de calificar</span></td></tr>
+<tr><td>Actividad 3</td><td>miércoles, 23 de septiembre de 2026, 23:00</td><td><span class="pill ok">✅ Entregado, pendiente de calificar</span></td></tr>
+<tr><td>Actividad 4</td><td>miércoles, 30 de septiembre de 2026, 23:00</td><td><span class="pill ok">✅ Entregado, pendiente de calificar</span></td></tr>
+<tr><td>Parcial Semana 5</td><td>—</td><td><span class="pill pending">⏳ Sin contenido publicado</span></td></tr>
+<tr><td>Actividad 5</td><td>—</td><td><span class="pill pending">⏳ Sin envíos aún</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🎥 Grabaciones de clase</h2>
+    <div class="card">
+      <table>
+        <thead><tr><th>Fecha</th><th>Duración</th><th>Enlace</th></tr></thead>
+        <tbody>
+        <tr><td>sábado, 26 de septiembre de 2026</td><td>1:03:24</td><td><a class="rec-link" href="https://drive.google.com/file/d/1UdwWEnOou7R9tcB2mLMzRVgUf9dUSlry/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>sábado, 19 de septiembre de 2026</td><td>1:39:21</td><td><a class="rec-link" href="https://drive.google.com/file/d/1MwHE6T8xaj_ukP4SLUd_M4KmddwfzFQq/view" target="_blank">Ver en Drive →</a></td></tr>
+<tr><td>sábado, 12 de septiembre de 2026</td><td>1:24:33</td><td><a class="rec-link" href="https://drive.google.com/file/d/1vyDrlg9OUq2KXezvuK2cNiD0D1W3GPwN/view" target="_blank">Ver en Drive →</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Resúmenes automáticos de contenido: próxima fase.</p>
+  </div>
+</section>
 
 </div>
+
+<footer>
+  unincca-tracker · Actualizado manualmente · Próximamente: actualización automática y resúmenes de clase
+</footer>
+
+<script>
+function showPanel(key) {
+  document.querySelectorAll('.course-panel').forEach(p => p.style.display = 'none');
+  document.getElementById('panel-' + key).style.display = 'block';
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.nav-btn[data-target="panel-' + key + '"]').classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+
 </body>
 </html>
