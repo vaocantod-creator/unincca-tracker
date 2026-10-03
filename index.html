@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNINCCA Tracker</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #171a23;
+    --accent: #6ee7b7;
+    --accent2: #60a5fa;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 20% 20%, #1b2030 0%, var(--bg) 60%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+  }
+  .card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 48px 56px;
+    max-width: 560px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .badge {
+    display: inline-block;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: rgba(255,255,255,0.05);
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-size: 2.4rem;
+    margin: 0 0 12px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  p.sub {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin: 0 0 28px;
+  }
+  .status {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .pill {
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(110, 231, 183, 0.12);
+    color: var(--accent);
+    border: 1px solid rgba(110, 231, 183, 0.3);
+  }
+  footer {
+    margin-top: 28px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">UNINCCA · Tracker Académico</span>
+    <h1>¡Hola, mundo! 👋</h1>
+    <p class="sub">
+      Esta es la primera publicación de prueba del tracker de clases.
+      Aquí vivirá el seguimiento de grabaciones, resúmenes y asignaciones
+      pendientes de cada curso.
+    </p>
+    <div class="status">
+      <span class="pill">✅ GitHub Pages activo</span>
+      <span class="pill">🚧 Dashboard en construcción</span>
+    </div>
+    <footer>Publicado automáticamente · Prueba de despliegue</footer>
+  </div>
+</body>
+</html>
