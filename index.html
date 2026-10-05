@@ -107,6 +107,18 @@
 
   .task-check { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); }
 
+  .status-select {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 0.82rem;
+    cursor: pointer;
+  }
+  .status-select:hover { border-color: var(--accent2); }
+  tbody tr.done .status-select { color: var(--accent); border-color: rgba(110,231,183,0.4); }
+
   .toggle-row { display: flex; justify-content: flex-end; margin-bottom: 10px; }
   .toggle-btn {
     background: var(--card);
@@ -180,105 +192,105 @@
         <thead><tr><th></th><th>Materia</th><th>Actividad</th><th>Cierre</th><th>Estado</th></tr></thead>
         <tbody id="general-tbody">
 <tr data-uid="PROGRAMACION_BASICA__0">
-      <td><input type="checkbox" class="task-check" data-uid="PROGRAMACION_BASICA__0" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="PROGRAMACION_BASICA__0" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Programación Básica</td>
       <td>Actividad 1</td>
       <td>miércoles, 23 de septiembre de 2026, 23:00</td>
       <td class="detail-cell">Entregado, pendiente de calificar · aún puedes editar la entrega</td>
     </tr>
 <tr data-uid="PROGRAMACION_BASICA__1">
-      <td><input type="checkbox" class="task-check" data-uid="PROGRAMACION_BASICA__1" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="PROGRAMACION_BASICA__1" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Programación Básica</td>
       <td>Actividad 2</td>
       <td>miércoles, 23 de septiembre de 2026, 23:00</td>
       <td class="detail-cell">Entregado, pendiente de calificar · aún puedes editar la entrega</td>
     </tr>
 <tr data-uid="PROGRAMACION_BASICA__2">
-      <td><input type="checkbox" class="task-check" data-uid="PROGRAMACION_BASICA__2" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="PROGRAMACION_BASICA__2" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Programación Básica</td>
       <td>Actividad 3</td>
       <td>miércoles, 23 de septiembre de 2026, 23:00</td>
       <td class="detail-cell">Entregado, pendiente de calificar · aún puedes editar la entrega</td>
     </tr>
 <tr data-uid="BASES_DE_DATOS_I__0">
-      <td><input type="checkbox" class="task-check" data-uid="BASES_DE_DATOS_I__0" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="BASES_DE_DATOS_I__0" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Bases de Datos I</td>
       <td>Actividad juego</td>
       <td>viernes, 25 de septiembre de 2026, 00:00</td>
       <td class="detail-cell">Entregado, pendiente de calificar · aún puedes editar la entrega</td>
     </tr>
 <tr data-uid="PROGRAMACION_BASICA__3">
-      <td><input type="checkbox" class="task-check" data-uid="PROGRAMACION_BASICA__3" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="PROGRAMACION_BASICA__3" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Programación Básica</td>
       <td>Actividad 4</td>
       <td>miércoles, 30 de septiembre de 2026, 23:00</td>
       <td class="detail-cell">Entregado, pendiente de calificar · aún puedes editar la entrega</td>
     </tr>
 <tr data-uid="BASES_DE_DATOS_I__1">
-      <td><input type="checkbox" class="task-check" data-uid="BASES_DE_DATOS_I__1" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="BASES_DE_DATOS_I__1" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Bases de Datos I</td>
       <td>Juego entidad relación</td>
       <td>viernes, 2 de octubre de 2026, 00:00</td>
       <td class="detail-cell">Entregado, pendiente de calificar · aún puedes editar la entrega</td>
     </tr>
 <tr data-uid="BASES_DE_DATOS_I__2">
-      <td><input type="checkbox" class="task-check" data-uid="BASES_DE_DATOS_I__2" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="BASES_DE_DATOS_I__2" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Bases de Datos I</td>
       <td>Diagrama ejercicio</td>
       <td>viernes, 2 de octubre de 2026, 00:00</td>
       <td class="detail-cell">Entregado, pendiente de calificar · aún puedes editar la entrega</td>
     </tr>
 <tr data-uid="ESTRUCTURA_DE_DATOS_I__0">
-      <td><input type="checkbox" class="task-check" data-uid="ESTRUCTURA_DE_DATOS_I__0" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="ESTRUCTURA_DE_DATOS_I__0" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Estructura de Datos I</td>
       <td>De la lectura a la lógica</td>
       <td>viernes, 2 de octubre de 2026, 00:00</td>
       <td class="detail-cell">Entregado, pendiente de calificar · aún puedes editar la entrega</td>
     </tr>
 <tr data-uid="ESTRUCTURA_DE_DATOS_I__1">
-      <td><input type="checkbox" class="task-check" data-uid="ESTRUCTURA_DE_DATOS_I__1" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="ESTRUCTURA_DE_DATOS_I__1" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Estructura de Datos I</td>
       <td>Juego condicionales</td>
       <td>viernes, 2 de octubre de 2026, 00:00</td>
       <td class="detail-cell">Entregado, pendiente de calificar · aún puedes editar la entrega</td>
     </tr>
 <tr data-uid="FISICA_MECANICA__4">
-      <td><input type="checkbox" class="task-check" data-uid="FISICA_MECANICA__4" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="FISICA_MECANICA__4" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Física Mecánica</td>
       <td>Parcial Primer Corte</td>
       <td>4 oct 2026</td>
       <td class="detail-cell">Entrega habilitada ahora</td>
     </tr>
 <tr data-uid="ESTRUCTURA_DE_DATOS_I__4">
-      <td><input type="checkbox" class="task-check" data-uid="ESTRUCTURA_DE_DATOS_I__4" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="ESTRUCTURA_DE_DATOS_I__4" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Estructura de Datos I</td>
       <td>PARCIAL PRIMER CORTE</td>
       <td>domingo, 4 de octubre de 2026, 23:59</td>
       <td class="detail-cell">Calificado: 5.00 de 5.00 (100%) · aún puedes reintentar/editar</td>
     </tr>
 <tr data-uid="PROGRAMACION_BASICA__4">
-      <td><input type="checkbox" class="task-check" data-uid="PROGRAMACION_BASICA__4" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="PROGRAMACION_BASICA__4" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Programación Básica</td>
       <td>Parcial Semana 5</td>
       <td>lunes, 5 de octubre de 2026, 23:00</td>
       <td class="detail-cell">Entrega habilitada ahora</td>
     </tr>
 <tr data-uid="LAB_FISICA_MECANICA__0">
-      <td><input type="checkbox" class="task-check" data-uid="LAB_FISICA_MECANICA__0" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="LAB_FISICA_MECANICA__0" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Laboratorio de Física Mecánica</td>
       <td>ENTREGA INFORME 1 - TEORIA DE ERRORES</td>
       <td>martes, 6 de octubre de 2026, 00:00</td>
       <td class="detail-cell">Entregado (2 archivos), pendiente de calificar · aún puedes editar la entrega</td>
     </tr>
 <tr data-uid="BASES_DE_DATOS_I__7">
-      <td><input type="checkbox" class="task-check" data-uid="BASES_DE_DATOS_I__7" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="BASES_DE_DATOS_I__7" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Bases de Datos I</td>
       <td>Parcial de Bases de Datos</td>
       <td>viernes, 9 de octubre de 2026, 00:00</td>
       <td class="detail-cell">Entrega habilitada ahora</td>
     </tr>
 <tr data-uid="BASES_DE_DATOS_I__6">
-      <td><input type="checkbox" class="task-check" data-uid="BASES_DE_DATOS_I__6" onchange="toggleTask(this)"></td>
+      <td><select class="status-select" data-uid="BASES_DE_DATOS_I__6" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
       <td>Bases de Datos I</td>
       <td>QUIZ PRIMER CORTE</td>
       <td>—</td>
@@ -570,6 +582,7 @@
 
 <script>
 const STORAGE_KEY = 'unincca_tracker_checks_v1';
+const HIDE_PREF_KEY = 'unincca_tracker_hide_done_v1';
 
 function loadChecks() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
@@ -580,29 +593,54 @@ function saveChecks(checks) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(checks));
 }
 
-function toggleTask(el) {
+function isHidingDone() {
+  return localStorage.getItem(HIDE_PREF_KEY) === '1';
+}
+
+function setHidingDone(hiding) {
+  localStorage.setItem(HIDE_PREF_KEY, hiding ? '1' : '0');
+}
+
+function applyRowState(row, done, hiding) {
+  row.classList.toggle('done', done);
+  row.classList.toggle('hidden-done', done && hiding);
+}
+
+function onStatusChange(el) {
   const uid = el.getAttribute('data-uid');
+  const done = el.value === 'hecho';
   const checks = loadChecks();
-  checks[uid] = el.checked;
+  checks[uid] = done;
   saveChecks(checks);
   const row = el.closest('tr');
-  row.classList.toggle('done', el.checked);
+  // Auto-ocultar: al marcar "Hecho" se oculta de inmediato si el modo ocultar está activo,
+  // o si no está activo lo activamos igual para que el cambio sea visible al instante.
+  applyRowState(row, done, isHidingDone());
 }
 
 function restoreChecks() {
   const checks = loadChecks();
-  document.querySelectorAll('.task-check').forEach(el => {
+  const hiding = isHidingDone();
+  document.querySelectorAll('.status-select').forEach(el => {
     const uid = el.getAttribute('data-uid');
-    if (checks[uid]) {
-      el.checked = true;
-      el.closest('tr').classList.add('done');
-    }
+    const done = !!checks[uid];
+    el.value = done ? 'hecho' : 'pendiente';
+    applyRowState(el.closest('tr'), done, hiding);
   });
+}
+
+function restoreToggleButton() {
+  const btn = document.getElementById('toggle-done-btn');
+  const hiding = isHidingDone();
+  btn.classList.toggle('active', hiding);
+  btn.textContent = hiding ? '👁 Mostrar marcadas' : '👁 Ocultar marcadas';
 }
 
 function toggleDoneVisibility() {
   const btn = document.getElementById('toggle-done-btn');
-  const hiding = btn.classList.toggle('active');
+  const hiding = !btn.classList.contains('active');
+  btn.classList.toggle('active', hiding);
+  setHidingDone(hiding);
   document.querySelectorAll('#general-tbody tr.done').forEach(row => {
     row.classList.toggle('hidden-done', hiding);
   });
@@ -617,6 +655,7 @@ function showPanel(key) {
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
+restoreToggleButton();
 restoreChecks();
 </script>
 
