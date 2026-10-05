@@ -107,6 +107,21 @@
 
   .task-check { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); }
 
+  .toggle-row { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+  .toggle-btn {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--muted);
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .toggle-btn:hover { color: var(--text); border-color: var(--accent2); }
+  .toggle-btn.active { color: var(--accent); border-color: rgba(110,231,183,0.4); background: rgba(110,231,183,0.08); }
+  tbody tr.hidden-done { display: none; }
+
   .pill {
     display: inline-block;
     font-size: 11.5px;
@@ -157,6 +172,9 @@
   <p class="subtitle">Actividades con entrega/edición habilitada AHORA y con instrucciones o fecha límite ya publicadas por el docente. Marca lo que ya entregaste — tu check se guarda solo en tu navegador, nadie más lo ve.</p>
 
   <div class="section">
+    <div class="toggle-row">
+      <button class="toggle-btn" id="toggle-done-btn" onclick="toggleDoneVisibility()">👁 Ocultar marcadas</button>
+    </div>
     <div class="card">
       <table>
         <thead><tr><th></th><th>Materia</th><th>Actividad</th><th>Cierre</th><th>Estado</th></tr></thead>
@@ -572,6 +590,15 @@ function restoreChecks() {
       el.closest('tr').classList.add('done');
     }
   });
+}
+
+function toggleDoneVisibility() {
+  const btn = document.getElementById('toggle-done-btn');
+  const hiding = btn.classList.toggle('active');
+  document.querySelectorAll('#general-tbody tr.done').forEach(row => {
+    row.classList.toggle('hidden-done', hiding);
+  });
+  btn.textContent = hiding ? '👁 Mostrar marcadas' : '👁 Ocultar marcadas';
 }
 
 function showPanel(key) {
