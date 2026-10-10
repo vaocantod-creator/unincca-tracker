@@ -194,13 +194,6 @@
   }
   .auth-btn:hover { border-color: var(--accent2); }
   .auth-btn[hidden], .auth-actions input[hidden] { display: none; }
-  .status-people {
-    margin-top: 5px;
-    font-size: 0.72rem;
-    color: var(--muted);
-    max-width: 210px;
-    line-height: 1.25;
-  }
   .sync-dot { color: var(--accent); }
   .sync-dot.off { color: var(--warn); }
 
@@ -240,7 +233,7 @@
 
 <div class="auth-card" id="auth-card">
   <div class="auth-main">
-    <div class="auth-title">Estados compartidos por estudiante</div>
+    <div class="auth-title">Estados privados por estudiante</div>
     <div class="auth-status" id="auth-status"><span class="sync-dot off">●</span> Sin sesión: usando respaldo local de este navegador.</div>
   </div>
   <div class="auth-actions">
@@ -255,7 +248,7 @@
 
 <section class="course-panel" id="panel-GENERAL" style="display:block">
   <h1>📌 Pendientes abiertos — todas las materias</h1>
-  <p class="subtitle">Actividades con entrega/edición habilitada AHORA y con instrucciones o fecha límite ya publicadas por el docente. Con sesión iniciada, tu estado se guarda en Supabase y se comparte por estudiante; sin sesión, queda solo en este navegador.</p>
+  <p class="subtitle">Actividades con entrega/edición habilitada AHORA y con instrucciones o fecha límite ya publicadas por el docente. Con sesión iniciada, tu estado se guarda en Supabase solo para ti; sin sesión, queda solo en este navegador.</p>
 
   <div class="section">
     <div class="toggle-row">
@@ -373,7 +366,7 @@
         </tbody>
       </table>
     </div>
-    <p class="note">Si inicias sesión con tu correo @unincca.edu.co, tu estado se guarda en Supabase y puedes ver quién más marcó cada actividad. Sin sesión, se mantiene el respaldo local del navegador.</p>
+    <p class="note">Si inicias sesión con tu correo @unincca.edu.co, tu estado se guarda en Supabase solo para ti. Sin sesión, se mantiene el respaldo local del navegador.</p>
   </div>
 </section>
 
@@ -839,24 +832,6 @@ async function fetchRemoteStatuses() {
   return remoteStatuses;
 }
 
-function summarizePeople(uid) {
-  const rows = remoteStatuses.filter(r => r.uid === uid && r.status === 'hecho');
-  if (!rows.length) return '';
-  const names = rows.slice(0, 3).map(r => r.user_name || r.user_email.split('@')[0]);
-  const extra = rows.length > 3 ? ` +${rows.length - 3}` : '';
-  return `Hecho por: ${names.join(', ')}${extra}`;
-}
-
-function setPeopleSummary(el, text) {
-  const cell = el.closest('td');
-  let box = cell.querySelector('.status-people');
-  if (!box) {
-    box = document.createElement('div');
-    box.className = 'status-people';
-    cell.appendChild(box);
-  }
-  box.textContent = text;
-}
 
 async function onStatusChange(el) {
   const uid = el.getAttribute('data-uid');
@@ -890,7 +865,6 @@ async function onStatusChange(el) {
   }
   await fetchRemoteStatuses();
   applyRowState(row, done, isHidingDone());
-  setPeopleSummary(el, summarizePeople(uid));
 }
 
 function restoreChecks() {
@@ -902,7 +876,6 @@ function restoreChecks() {
     const done = currentUser ? remoteOwn?.status === 'hecho' : !!localChecks[uid];
     el.value = done ? 'hecho' : 'pendiente';
     applyRowState(el.closest('tr'), done, hiding);
-    setPeopleSummary(el, currentUser ? summarizePeople(uid) : '');
   });
 }
 
