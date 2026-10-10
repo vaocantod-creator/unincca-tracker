@@ -391,6 +391,85 @@
   }
 
 
+  /* Desktop lateral menu */
+  nav#nav {
+    position: fixed;
+    left: 18px;
+    top: 18px;
+    bottom: 18px;
+    width: 246px;
+    max-width: none;
+    margin: 0;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 8px;
+    background: rgba(15,17,23,0.82);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 22px;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 20px 70px rgba(0,0,0,0.28);
+    overflow-y: auto;
+    z-index: 10;
+  }
+  .nav-title {
+    padding: 8px 8px 14px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .nav-title span {
+    display: block;
+    font-weight: 760;
+    letter-spacing: -0.02em;
+  }
+  .nav-title small {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 0.74rem;
+  }
+  nav#nav .nav-btn {
+    width: 100%;
+    text-align: left;
+    border-radius: 13px;
+    padding: 10px 12px;
+    background: transparent;
+  }
+  nav#nav .nav-btn.active {
+    box-shadow: 0 10px 28px rgba(96,165,250,0.16);
+  }
+  nav#nav .nav-btn[hidden] { display: none; }
+  .topbar, .auth-card, .wrap, footer {
+    margin-left: 284px;
+    margin-right: 24px;
+  }
+  .topbar { text-align: left; padding-left: 0; }
+  .auth-card, .wrap { max-width: 1060px; }
+  footer { max-width: 1060px; text-align: center; }
+  .access-note {
+    display: none;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.35;
+    margin-top: 6px;
+  }
+  .access-note.visible { display: block; }
+  .mobile-course-select option[hidden] { display: none; }
+
+  @media (max-width: 900px) {
+    nav#nav { display: none; }
+    .topbar, .auth-card, .wrap, footer {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .topbar { text-align: center; padding-left: 20px; }
+    .mobile-nav-wrap { display: block; }
+  }
+
+
   footer {
     text-align: center;
     margin-top: 10px;
@@ -407,6 +486,10 @@
 </div>
 
 <nav id="nav">
+  <div class="nav-title">
+    <span>UNINCCA Tracker</span>
+    <small>Menú académico</small>
+  </div>
 <button class="nav-btn active" data-target="panel-GENERAL" onclick="showPanel('GENERAL')">📌 General</button>
 <button class="nav-btn" data-target="panel-FISICA_MECANICA" onclick="showPanel('FISICA_MECANICA')">Física Mecánica</button>
 <button class="nav-btn" data-target="panel-ALGEBRA_LINEAL" onclick="showPanel('ALGEBRA_LINEAL')">Álgebra Lineal</button>
@@ -437,6 +520,7 @@
   <div class="auth-main">
     <div class="auth-title">Estados privados por estudiante</div>
     <div class="auth-status" id="auth-status"><span class="sync-dot off">●</span> Sin sesión: usando respaldo local de este navegador.</div>
+    <div class="access-note" id="access-note">Vista pública: solo se muestra la sección General. Las secciones por materia están disponibles únicamente para Victor.</div>
   </div>
   <div class="auth-actions">
     <button class="auth-btn primary" id="google-login-btn" onclick="signInWithGoogle()">Entrar con Google</button>
@@ -997,6 +1081,7 @@ const STORAGE_KEY = 'unincca_tracker_checks_v1';
 const HIDE_PREF_KEY = 'unincca_tracker_hide_done_v1';
 let currentUser = null;
 let remoteStatuses = [];
+const OWNER_EMAIL = 'vaocantod@unincca.edu.co';
 
 const COURSE_KEYS = {
   'Física Mecánica': 'FISICA_MECANICA',
@@ -1008,6 +1093,34 @@ const COURSE_KEYS = {
   'Programación Básica': 'PROGRAMACION_BASICA',
   'Preuniversitario': 'PREUNIVERSITARIO'
 };
+
+
+function isOwnerUser() {
+  return (currentUser?.email || '').toLowerCase() === OWNER_EMAIL;
+}
+
+function canSeeCourseSections() {
+  return isOwnerUser();
+}
+
+function applyAccessVisibility() {
+  const owner = canSeeCourseSections();
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    const isGeneral = btn.dataset.target === 'panel-GENERAL';
+    btn.hidden = !owner && !isGeneral;
+  });
+  const mobileSelect = document.getElementById('mobile-course-select');
+  if (mobileSelect) {
+    Array.from(mobileSelect.options).forEach(opt => {
+      opt.hidden = !owner && opt.value !== 'GENERAL';
+    });
+    if (!owner) mobileSelect.value = 'GENERAL';
+  }
+  const accessNote = document.getElementById('access-note');
+  if (accessNote) accessNote.classList.toggle('visible', !owner);
+  const activePanel = Array.from(document.querySelectorAll('.course-panel')).find(p => p.style.display !== 'none');
+  if (!owner && activePanel && activePanel.id !== 'panel-GENERAL') showPanel('GENERAL');
+}
 
 function parseSpanishDate(text) {
   if (!text || text.trim() === '—') return null;
@@ -1193,7 +1306,7 @@ function updateAuthUi() {
   const googleBtn = document.getElementById('google-login-btn');
   const logoutBtn = document.getElementById('logout-btn');
   if (currentUser) {
-    status.innerHTML = `<span class="sync-dot">●</span> Conectado como ${displayNameFor(currentUser)} · guardando en Supabase.`;
+    status.innerHTML = `<span class="sync-dot">●</span> Conectado como ${displayNameFor(currentUser)} · guardando tu progreso privado en Supabase.`;
     emailInput.hidden = true;
     magicBtn.hidden = true;
     googleBtn.hidden = true;
@@ -1205,6 +1318,7 @@ function updateAuthUi() {
     googleBtn.hidden = false;
     logoutBtn.hidden = true;
   }
+  applyAccessVisibility();
 }
 
 async function fetchRemoteStatuses() {
@@ -1296,10 +1410,14 @@ function toggleDoneVisibility() {
 }
 
 function showPanel(key) {
+  if (key !== 'GENERAL' && !canSeeCourseSections()) {
+    key = 'GENERAL';
+  }
   document.querySelectorAll('.course-panel').forEach(p => p.style.display = 'none');
   document.getElementById('panel-' + key).style.display = 'block';
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('.nav-btn[data-target="panel-' + key + '"]').classList.add('active');
+  const activeBtn = document.querySelector('.nav-btn[data-target="panel-' + key + '"]');
+  if (activeBtn) activeBtn.classList.add('active');
   const mobileSelect = document.getElementById('mobile-course-select');
   if (mobileSelect) mobileSelect.value = key;
   window.scrollTo({top:0, behavior:'smooth'});
@@ -1312,11 +1430,13 @@ async function initAuthAndStatuses() {
   const { data } = await supabaseClient.auth.getSession();
   currentUser = data.session?.user || null;
   updateAuthUi();
+  applyAccessVisibility();
   await fetchRemoteStatuses();
   restoreChecks();
   supabaseClient.auth.onAuthStateChange(async (_event, session) => {
     currentUser = session?.user || null;
     updateAuthUi();
+    applyAccessVisibility();
     await fetchRemoteStatuses();
     restoreChecks();
   });
