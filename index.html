@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UNINCCA Tracker</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --bg: #0f1117;
@@ -151,6 +152,65 @@
 
   .note { font-size: 0.8rem; color: var(--muted); margin-top: 10px; padding: 0 4px; }
 
+  .auth-card {
+    max-width: 920px;
+    margin: 0 auto 18px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    background: rgba(23,26,35,0.86);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+  }
+  .auth-main { display: flex; flex-direction: column; gap: 3px; min-width: 220px; }
+  .auth-title { font-size: 0.9rem; font-weight: 650; }
+  .auth-status { color: var(--muted); font-size: 0.8rem; }
+  .auth-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .auth-actions input {
+    background: #10131c;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 8px 10px;
+    min-width: 230px;
+  }
+  .auth-btn {
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.06);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  .auth-btn.primary {
+    color: #0f1117;
+    border-color: transparent;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    font-weight: 650;
+  }
+  .auth-btn:hover { border-color: var(--accent2); }
+  .auth-btn[hidden], .auth-actions input[hidden] { display: none; }
+  .status-people {
+    margin-top: 5px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    max-width: 210px;
+    line-height: 1.25;
+  }
+  .sync-dot { color: var(--accent); }
+  .sync-dot.off { color: var(--warn); }
+
+  @media (max-width: 640px) {
+    .auth-card { margin: 0 20px 18px; align-items: stretch; }
+    .auth-actions, .auth-actions input, .auth-btn { width: 100%; }
+    .auth-btn { text-align: center; }
+  }
+
+
   footer {
     text-align: center;
     margin-top: 10px;
@@ -178,11 +238,24 @@
 <button class="nav-btn" data-target="panel-PREUNIVERSITARIO" onclick="showPanel('PREUNIVERSITARIO')">Preuniversitario</button>
 </nav>
 
+<div class="auth-card" id="auth-card">
+  <div class="auth-main">
+    <div class="auth-title">Estados compartidos por estudiante</div>
+    <div class="auth-status" id="auth-status"><span class="sync-dot off">●</span> Sin sesión: usando respaldo local de este navegador.</div>
+  </div>
+  <div class="auth-actions">
+    <button class="auth-btn primary" id="google-login-btn" onclick="signInWithGoogle()">Entrar con Google</button>
+    <input id="magic-email" type="email" placeholder="correo @unincca.edu.co" autocomplete="email">
+    <button class="auth-btn" id="magic-login-btn" onclick="signInWithEmail()">Enviar enlace</button>
+    <button class="auth-btn" id="logout-btn" onclick="signOut()" hidden>Salir</button>
+  </div>
+</div>
+
 <div class="wrap">
 
 <section class="course-panel" id="panel-GENERAL" style="display:block">
   <h1>📌 Pendientes abiertos — todas las materias</h1>
-  <p class="subtitle">Actividades con entrega/edición habilitada AHORA y con instrucciones o fecha límite ya publicadas por el docente. Marca lo que ya entregaste — tu check se guarda solo en tu navegador, nadie más lo ve.</p>
+  <p class="subtitle">Actividades con entrega/edición habilitada AHORA y con instrucciones o fecha límite ya publicadas por el docente. Con sesión iniciada, tu estado se guarda en Supabase y se comparte por estudiante; sin sesión, queda solo en este navegador.</p>
 
   <div class="section">
     <div class="toggle-row">
@@ -300,7 +373,7 @@
         </tbody>
       </table>
     </div>
-    <p class="note">Tu progreso se guarda localmente en este navegador (localStorage). Si usas otro dispositivo o borras los datos del sitio, se reinicia. No se comparte con nadie.</p>
+    <p class="note">Si inicias sesión con tu correo @unincca.edu.co, tu estado se guarda en Supabase y puedes ver quién más marcó cada actividad. Sin sesión, se mantiene el respaldo local del navegador.</p>
   </div>
 </section>
 
@@ -660,8 +733,14 @@
 </footer>
 
 <script>
+const SUPABASE_URL = 'https://ybizodahifaibzaiedqh.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_0EY2DjFvL5q2JVyymOLguw_U7L1Ye5N';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const STORAGE_KEY = 'unincca_tracker_checks_v1';
 const HIDE_PREF_KEY = 'unincca_tracker_hide_done_v1';
+let currentUser = null;
+let remoteStatuses = [];
 
 function loadChecks() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
@@ -685,26 +764,145 @@ function applyRowState(row, done, hiding) {
   row.classList.toggle('hidden-done', done && hiding);
 }
 
-function onStatusChange(el) {
+function displayNameFor(user) {
+  return user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email || 'Estudiante';
+}
+
+function requireUninccaEmail(email) {
+  return (email || '').trim().toLowerCase().endsWith('@unincca.edu.co');
+}
+
+async function signInWithGoogle() {
+  const { error } = await supabaseClient.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.href.split('#')[0] }
+  });
+  if (error) alert('No pude iniciar con Google todavía: ' + error.message + '\nUsa el enlace mágico por correo mientras queda listo Google OAuth.');
+}
+
+async function signInWithEmail() {
+  const input = document.getElementById('magic-email');
+  const email = (input.value || '').trim().toLowerCase();
+  if (!requireUninccaEmail(email)) {
+    alert('Usa tu correo institucional @unincca.edu.co');
+    return;
+  }
+  const { error } = await supabaseClient.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: window.location.href.split('#')[0] }
+  });
+  if (error) alert('No pude enviar el enlace: ' + error.message);
+  else alert('Te envié un enlace de acceso a ' + email + '. Ábrelo y volverás al tracker con sesión iniciada.');
+}
+
+async function signOut() {
+  await supabaseClient.auth.signOut();
+  currentUser = null;
+  remoteStatuses = [];
+  updateAuthUi();
+  restoreChecks();
+}
+
+function updateAuthUi() {
+  const status = document.getElementById('auth-status');
+  const emailInput = document.getElementById('magic-email');
+  const magicBtn = document.getElementById('magic-login-btn');
+  const googleBtn = document.getElementById('google-login-btn');
+  const logoutBtn = document.getElementById('logout-btn');
+  if (currentUser) {
+    status.innerHTML = `<span class="sync-dot">●</span> Conectado como ${displayNameFor(currentUser)} · guardando en Supabase.`;
+    emailInput.hidden = true;
+    magicBtn.hidden = true;
+    googleBtn.hidden = true;
+    logoutBtn.hidden = false;
+  } else {
+    status.innerHTML = '<span class="sync-dot off">●</span> Sin sesión: usando respaldo local de este navegador.';
+    emailInput.hidden = false;
+    magicBtn.hidden = false;
+    googleBtn.hidden = false;
+    logoutBtn.hidden = true;
+  }
+}
+
+async function fetchRemoteStatuses() {
+  if (!currentUser) return [];
+  const { data, error } = await supabaseClient
+    .from('activity_status')
+    .select('uid,status,user_id,user_email,user_name,updated_at')
+    .order('updated_at', { ascending: false });
+  if (error) {
+    console.warn('Supabase status fetch failed', error);
+    document.getElementById('auth-status').innerHTML = '<span class="sync-dot off">●</span> Sesión iniciada, pero no pude leer Supabase: ' + error.message;
+    return [];
+  }
+  remoteStatuses = data || [];
+  return remoteStatuses;
+}
+
+function summarizePeople(uid) {
+  const rows = remoteStatuses.filter(r => r.uid === uid && r.status === 'hecho');
+  if (!rows.length) return '';
+  const names = rows.slice(0, 3).map(r => r.user_name || r.user_email.split('@')[0]);
+  const extra = rows.length > 3 ? ` +${rows.length - 3}` : '';
+  return `Hecho por: ${names.join(', ')}${extra}`;
+}
+
+function setPeopleSummary(el, text) {
+  const cell = el.closest('td');
+  let box = cell.querySelector('.status-people');
+  if (!box) {
+    box = document.createElement('div');
+    box.className = 'status-people';
+    cell.appendChild(box);
+  }
+  box.textContent = text;
+}
+
+async function onStatusChange(el) {
   const uid = el.getAttribute('data-uid');
   const done = el.value === 'hecho';
-  const checks = loadChecks();
-  checks[uid] = done;
-  saveChecks(checks);
   const row = el.closest('tr');
-  // Auto-ocultar: al marcar "Hecho" se oculta de inmediato si el modo ocultar está activo,
-  // o si no está activo lo activamos igual para que el cambio sea visible al instante.
+
+  if (!currentUser) {
+    const checks = loadChecks();
+    checks[uid] = done;
+    saveChecks(checks);
+    applyRowState(row, done, isHidingDone());
+    return;
+  }
+
+  el.disabled = true;
+  const payload = {
+    user_id: currentUser.id,
+    user_email: currentUser.email,
+    user_name: displayNameFor(currentUser),
+    uid,
+    status: done ? 'hecho' : 'pendiente'
+  };
+  const { error } = await supabaseClient
+    .from('activity_status')
+    .upsert(payload, { onConflict: 'user_id,uid' });
+  el.disabled = false;
+  if (error) {
+    alert('No pude guardar en Supabase: ' + error.message);
+    restoreChecks();
+    return;
+  }
+  await fetchRemoteStatuses();
   applyRowState(row, done, isHidingDone());
+  setPeopleSummary(el, summarizePeople(uid));
 }
 
 function restoreChecks() {
-  const checks = loadChecks();
+  const localChecks = loadChecks();
   const hiding = isHidingDone();
   document.querySelectorAll('.status-select').forEach(el => {
     const uid = el.getAttribute('data-uid');
-    const done = !!checks[uid];
+    const remoteOwn = currentUser ? remoteStatuses.find(r => r.uid === uid && r.user_id === currentUser.id) : null;
+    const done = currentUser ? remoteOwn?.status === 'hecho' : !!localChecks[uid];
     el.value = done ? 'hecho' : 'pendiente';
     applyRowState(el.closest('tr'), done, hiding);
+    setPeopleSummary(el, currentUser ? summarizePeople(uid) : '');
   });
 }
 
@@ -734,8 +932,22 @@ function showPanel(key) {
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
-restoreToggleButton();
-restoreChecks();
+async function initAuthAndStatuses() {
+  restoreToggleButton();
+  const { data } = await supabaseClient.auth.getSession();
+  currentUser = data.session?.user || null;
+  updateAuthUi();
+  await fetchRemoteStatuses();
+  restoreChecks();
+  supabaseClient.auth.onAuthStateChange(async (_event, session) => {
+    currentUser = session?.user || null;
+    updateAuthUi();
+    await fetchRemoteStatuses();
+    restoreChecks();
+  });
+}
+
+initAuthAndStatuses();
 </script>
 
 </body>
