@@ -204,6 +204,193 @@
   }
 
 
+  .mobile-nav-wrap {
+    display: none;
+    max-width: 920px;
+    margin: 0 auto 14px;
+    padding: 0 20px;
+  }
+  .mobile-course-select, .filter-control {
+    width: 100%;
+    background: #10131c;
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 0.92rem;
+    outline: none;
+  }
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin: 18px 0 18px;
+  }
+  .metric-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 14px 14px 13px;
+    min-height: 92px;
+  }
+  .metric-card::after {
+    content: '';
+    position: absolute;
+    inset: auto -24px -36px auto;
+    width: 86px;
+    height: 86px;
+    border-radius: 999px;
+    background: rgba(96,165,250,0.12);
+    filter: blur(3px);
+  }
+  .metric-label { color: var(--muted); font-size: 0.76rem; margin-bottom: 8px; }
+  .metric-value { font-size: 1.7rem; line-height: 1; font-weight: 750; letter-spacing: -0.04em; }
+  .metric-hint { color: var(--muted); font-size: 0.72rem; margin-top: 8px; line-height: 1.25; }
+  .metric-card.accent .metric-value { color: var(--accent); }
+  .metric-card.warn .metric-value { color: var(--warn); }
+  .metric-card.danger .metric-value { color: var(--danger); }
+  .metric-card.info .metric-value { color: var(--accent2); }
+  .progress-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    background: rgba(23,26,35,0.78);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+  }
+  .progress-title { font-weight: 700; margin-bottom: 7px; }
+  .progress-caption { color: var(--muted); font-size: 0.8rem; margin-top: 7px; }
+  .progress-track {
+    height: 9px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 999px;
+    transition: width 0.2s ease;
+  }
+  .next-deadline {
+    min-width: 210px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    text-align: right;
+  }
+  .next-deadline strong { display: block; color: var(--text); font-size: 0.9rem; margin-top: 3px; }
+  .filter-card {
+    background: rgba(23,26,35,0.72);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .filter-grid {
+    display: grid;
+    grid-template-columns: 1.5fr repeat(3, 1fr);
+    gap: 10px;
+  }
+  .search-wrap { position: relative; }
+  .search-wrap span {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .search-wrap input { padding-left: 34px; }
+  .filter-summary {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .clear-filters {
+    color: var(--accent2);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.8rem;
+  }
+  tr.filtered-out { display: none; }
+  tr.filtered-empty-row td {
+    color: var(--muted);
+    text-align: center;
+    padding: 24px 16px;
+    font-style: italic;
+  }
+  .status-select.saved { color: var(--accent); border-color: rgba(110,231,183,0.4); }
+
+  @media (max-width: 760px) {
+    .topbar { padding: 22px 16px 8px; }
+    nav#nav { display: none; }
+    .mobile-nav-wrap { display: block; }
+    .wrap { padding: 0 14px 48px; }
+    .course-panel h1 { font-size: 1.45rem; line-height: 1.15; }
+    .subtitle { font-size: 0.88rem; margin-bottom: 18px; }
+    .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .metric-card { min-height: 84px; padding: 12px; }
+    .metric-value { font-size: 1.45rem; }
+    .progress-panel { grid-template-columns: 1fr; }
+    .next-deadline { min-width: 0; text-align: left; }
+    .filter-grid { grid-template-columns: 1fr; }
+    .toggle-row { justify-content: stretch; }
+    .toggle-btn { width: 100%; padding: 10px 14px; }
+    .card { background: transparent; border: 0; overflow: visible; }
+    #general-tbody { display: block; }
+    #general-tbody tr {
+      display: block;
+      background: rgba(23,26,35,0.9);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      margin-bottom: 12px;
+      padding: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    }
+    #general-tbody tr.hidden-done, #general-tbody tr.filtered-out { display: none; }
+    #general-tbody tr.filtered-empty-row { padding: 0; }
+    #general-tbody td {
+      display: grid;
+      grid-template-columns: 94px minmax(0,1fr);
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+      align-items: start;
+    }
+    #general-tbody td:last-child { border-bottom: 0 !important; }
+    #general-tbody td::before {
+      content: attr(data-label);
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding-top: 4px;
+    }
+    #general-tbody thead, #panel-GENERAL thead { display: none; }
+    #panel-GENERAL table, #panel-GENERAL tbody { display: block; width: 100%; }
+    .status-select { width: 100%; padding: 8px 10px; }
+    .pill { white-space: normal; line-height: 1.25; }
+  }
+
+  @media (max-width: 420px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .auth-card { margin-left: 14px; margin-right: 14px; }
+    #general-tbody td { grid-template-columns: 82px minmax(0,1fr); }
+  }
+
+
   footer {
     text-align: center;
     margin-top: 10px;
@@ -231,6 +418,21 @@
 <button class="nav-btn" data-target="panel-PREUNIVERSITARIO" onclick="showPanel('PREUNIVERSITARIO')">Preuniversitario</button>
 </nav>
 
+<div class="mobile-nav-wrap">
+  <select class="mobile-course-select" id="mobile-course-select" onchange="showPanel(this.value)">
+    <option value="GENERAL">📌 General</option>
+    <option value="FISICA_MECANICA">Física Mecánica</option>
+    <option value="ALGEBRA_LINEAL">Álgebra Lineal</option>
+    <option value="CALCULO_DIFERENCIAL">Cálculo Diferencial</option>
+    <option value="LAB_FISICA_MECANICA">Laboratorio de Física Mecánica</option>
+    <option value="BASES_DE_DATOS_I">Bases de Datos I</option>
+    <option value="ESTRUCTURA_DE_DATOS_I">Estructura de Datos I</option>
+    <option value="PROGRAMACION_BASICA">Programación Básica</option>
+    <option value="PREUNIVERSITARIO">Preuniversitario</option>
+  </select>
+</div>
+
+
 <div class="auth-card" id="auth-card">
   <div class="auth-main">
     <div class="auth-title">Estados privados por estudiante</div>
@@ -249,6 +451,67 @@
 <section class="course-panel" id="panel-GENERAL" style="display:block">
   <h1>📌 Pendientes abiertos — todas las materias</h1>
   <p class="subtitle">Actividades con entrega/edición habilitada AHORA y con instrucciones o fecha límite ya publicadas por el docente. Con sesión iniciada, tu estado se guarda en Supabase solo para ti; sin sesión, queda solo en este navegador.</p>
+
+
+  <div class="dashboard-grid" id="dashboard-grid">
+    <div class="metric-card info">
+      <div class="metric-label">Pendientes visibles</div>
+      <div class="metric-value" id="metric-pending">0</div>
+      <div class="metric-hint">Actividades por hacer según tus filtros</div>
+    </div>
+    <div class="metric-card accent">
+      <div class="metric-label">Hechas por mí</div>
+      <div class="metric-value" id="metric-done">0</div>
+      <div class="metric-hint">Guardadas en tu sesión o navegador</div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">Vencen esta semana</div>
+      <div class="metric-value" id="metric-week">0</div>
+      <div class="metric-hint">Prioridad para revisar primero</div>
+    </div>
+    <div class="metric-card danger">
+      <div class="metric-label">Vencidos editables</div>
+      <div class="metric-value" id="metric-overdue">0</div>
+      <div class="metric-hint">Aún aparecen como accionables</div>
+    </div>
+  </div>
+
+  <div class="progress-panel">
+    <div>
+      <div class="progress-title">Mi progreso</div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-caption" id="progress-caption">0 de 0 actividades marcadas como hechas.</div>
+    </div>
+    <div class="next-deadline" id="next-deadline">Próxima fecha límite<strong>—</strong></div>
+  </div>
+
+  <div class="filter-card">
+    <div class="filter-grid">
+      <label class="search-wrap">
+        <span>⌕</span>
+        <input class="filter-control" id="search-filter" type="search" placeholder="Buscar actividad o materia..." oninput="applyFilters()">
+      </label>
+      <select class="filter-control" id="course-filter" onchange="applyFilters()">
+        <option value="all">Todas las materias</option>
+      </select>
+      <select class="filter-control" id="status-filter" onchange="applyFilters()">
+        <option value="all">Todos los estados</option>
+        <option value="pendiente">Pendientes</option>
+        <option value="hecho">Hechas</option>
+      </select>
+      <select class="filter-control" id="date-filter" onchange="applyFilters()">
+        <option value="all">Todas las fechas</option>
+        <option value="week">Vencen esta semana</option>
+        <option value="overdue">Vencidos editables</option>
+        <option value="future">Futuras</option>
+        <option value="none">Sin fecha</option>
+      </select>
+    </div>
+    <div class="filter-summary">
+      <span id="filter-summary-text">Mostrando todas las actividades.</span>
+      <button class="clear-filters" onclick="clearFilters()">Limpiar filtros</button>
+    </div>
+  </div>
 
   <div class="section">
     <div class="toggle-row">
@@ -735,6 +998,133 @@ const HIDE_PREF_KEY = 'unincca_tracker_hide_done_v1';
 let currentUser = null;
 let remoteStatuses = [];
 
+const COURSE_KEYS = {
+  'Física Mecánica': 'FISICA_MECANICA',
+  'Laboratorio de Física Mecánica': 'LAB_FISICA_MECANICA',
+  'Cálculo Diferencial': 'CALCULO_DIFERENCIAL',
+  'Álgebra Lineal': 'ALGEBRA_LINEAL',
+  'Bases de Datos I': 'BASES_DE_DATOS_I',
+  'Estructura de Datos I': 'ESTRUCTURA_DE_DATOS_I',
+  'Programación Básica': 'PROGRAMACION_BASICA',
+  'Preuniversitario': 'PREUNIVERSITARIO'
+};
+
+function parseSpanishDate(text) {
+  if (!text || text.trim() === '—') return null;
+  const months = {enero:0,febrero:1,marzo:2,abril:3,mayo:4,junio:5,julio:6,agosto:7,septiembre:8,setiembre:8,octubre:9,noviembre:10,diciembre:11};
+  const m = text.toLowerCase().match(/(\d{1,2})\s+de\s+([a-záéíóúñ]+)\s+de\s+(\d{4})(?:,\s*(\d{1,2}):(\d{2}))?/i);
+  if (!m) return null;
+  const month = months[m[2].normalize('NFD').replace(/[\u0300-\u036f]/g, '')];
+  if (month === undefined) return null;
+  return new Date(Number(m[3]), month, Number(m[1]), Number(m[4] || 23), Number(m[5] || 59));
+}
+
+function rowInfo(row) {
+  const cells = row.querySelectorAll('td');
+  const statusSelect = row.querySelector('.status-select');
+  const course = cells[1]?.innerText.trim() || '';
+  const activity = cells[2]?.innerText.trim() || '';
+  const dueText = cells[3]?.innerText.trim() || '';
+  const detail = cells[4]?.innerText.trim() || '';
+  const dueDate = parseSpanishDate(dueText);
+  const now = new Date();
+  const week = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7, 23, 59, 59);
+  return {
+    uid: row.dataset.uid,
+    status: statusSelect?.value || 'pendiente',
+    course,
+    courseKey: COURSE_KEYS[course] || 'OTHER',
+    activity,
+    dueText,
+    detail,
+    dueDate,
+    search: `${course} ${activity} ${dueText} ${detail}`.toLowerCase(),
+    isOverdue: !!dueDate && dueDate < now,
+    isThisWeek: !!dueDate && dueDate >= now && dueDate <= week,
+    isFuture: !!dueDate && dueDate > week,
+    hasNoDate: !dueDate
+  };
+}
+
+function enhanceGeneralRows() {
+  const labels = ['Estado', 'Materia', 'Actividad', 'Cierre', 'Detalle'];
+  document.querySelectorAll('#general-tbody tr:not(.filtered-empty-row)').forEach(row => {
+    row.querySelectorAll('td').forEach((td, idx) => td.setAttribute('data-label', labels[idx] || ''));
+  });
+}
+
+function populateCourseFilter() {
+  const select = document.getElementById('course-filter');
+  if (!select || select.dataset.ready === '1') return;
+  const courses = [...new Set([...document.querySelectorAll('#general-tbody tr:not(.filtered-empty-row)')].map(r => rowInfo(r).course).filter(Boolean))].sort();
+  courses.forEach(course => {
+    const opt = document.createElement('option');
+    opt.value = course;
+    opt.textContent = course;
+    select.appendChild(opt);
+  });
+  select.dataset.ready = '1';
+}
+
+function updateDashboard() {
+  const rows = [...document.querySelectorAll('#general-tbody tr:not(.filtered-empty-row)')];
+  const infos = rows.map(rowInfo);
+  const done = infos.filter(i => i.status === 'hecho').length;
+  const pending = infos.length - done;
+  const week = infos.filter(i => i.status !== 'hecho' && i.isThisWeek).length;
+  const overdue = infos.filter(i => i.status !== 'hecho' && i.isOverdue).length;
+  const next = infos.filter(i => i.status !== 'hecho' && i.dueDate).sort((a,b) => a.dueDate - b.dueDate)[0];
+  const pct = infos.length ? Math.round((done / infos.length) * 100) : 0;
+  document.getElementById('metric-pending').textContent = pending;
+  document.getElementById('metric-done').textContent = done;
+  document.getElementById('metric-week').textContent = week;
+  document.getElementById('metric-overdue').textContent = overdue;
+  document.getElementById('progress-fill').style.width = `${pct}%`;
+  document.getElementById('progress-caption').textContent = `${done} de ${infos.length} actividades marcadas como hechas (${pct}%).`;
+  document.getElementById('next-deadline').innerHTML = next ? `Próxima fecha límite<strong>${next.course} · ${next.activity}<br>${next.dueText}</strong>` : 'Próxima fecha límite<strong>Sin pendientes con fecha</strong>';
+}
+
+function applyFilters() {
+  const q = (document.getElementById('search-filter')?.value || '').trim().toLowerCase();
+  const course = document.getElementById('course-filter')?.value || 'all';
+  const status = document.getElementById('status-filter')?.value || 'all';
+  const date = document.getElementById('date-filter')?.value || 'all';
+  const rows = [...document.querySelectorAll('#general-tbody tr:not(.filtered-empty-row)')];
+  let visible = 0;
+  rows.forEach(row => {
+    const info = rowInfo(row);
+    let ok = true;
+    if (q && !info.search.includes(q)) ok = false;
+    if (course !== 'all' && info.course !== course) ok = false;
+    if (status !== 'all' && info.status !== status) ok = false;
+    if (date === 'week' && !info.isThisWeek) ok = false;
+    if (date === 'overdue' && !info.isOverdue) ok = false;
+    if (date === 'future' && !info.isFuture) ok = false;
+    if (date === 'none' && !info.hasNoDate) ok = false;
+    row.classList.toggle('filtered-out', !ok);
+    if (ok && !row.classList.contains('hidden-done')) visible++;
+  });
+  let empty = document.querySelector('#general-tbody .filtered-empty-row');
+  if (!empty) {
+    empty = document.createElement('tr');
+    empty.className = 'filtered-empty-row';
+    empty.innerHTML = '<td colspan="5">No hay actividades que coincidan con estos filtros.</td>';
+    document.getElementById('general-tbody').appendChild(empty);
+  }
+  empty.style.display = visible ? 'none' : '';
+  document.getElementById('filter-summary-text').textContent = visible === rows.length ? `Mostrando ${visible} actividades.` : `Mostrando ${visible} de ${rows.length} actividades.`;
+  updateDashboard();
+}
+
+function clearFilters() {
+  document.getElementById('search-filter').value = '';
+  document.getElementById('course-filter').value = 'all';
+  document.getElementById('status-filter').value = 'all';
+  document.getElementById('date-filter').value = 'all';
+  applyFilters();
+}
+
+
 function loadChecks() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
   catch (e) { return {}; }
@@ -843,6 +1233,8 @@ async function onStatusChange(el) {
     checks[uid] = done;
     saveChecks(checks);
     applyRowState(row, done, isHidingDone());
+    updateDashboard();
+    applyFilters();
     return;
   }
 
@@ -865,6 +1257,8 @@ async function onStatusChange(el) {
   }
   await fetchRemoteStatuses();
   applyRowState(row, done, isHidingDone());
+  updateDashboard();
+  applyFilters();
 }
 
 function restoreChecks() {
@@ -875,8 +1269,11 @@ function restoreChecks() {
     const remoteOwn = currentUser ? remoteStatuses.find(r => r.uid === uid && r.user_id === currentUser.id) : null;
     const done = currentUser ? remoteOwn?.status === 'hecho' : !!localChecks[uid];
     el.value = done ? 'hecho' : 'pendiente';
+    el.classList.toggle('saved', done);
     applyRowState(el.closest('tr'), done, hiding);
   });
+  updateDashboard();
+  applyFilters();
 }
 
 function restoreToggleButton() {
@@ -895,6 +1292,7 @@ function toggleDoneVisibility() {
     row.classList.toggle('hidden-done', hiding);
   });
   btn.textContent = hiding ? '👁 Mostrar marcadas' : '👁 Ocultar marcadas';
+  applyFilters();
 }
 
 function showPanel(key) {
@@ -902,10 +1300,14 @@ function showPanel(key) {
   document.getElementById('panel-' + key).style.display = 'block';
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.nav-btn[data-target="panel-' + key + '"]').classList.add('active');
+  const mobileSelect = document.getElementById('mobile-course-select');
+  if (mobileSelect) mobileSelect.value = key;
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
 async function initAuthAndStatuses() {
+  enhanceGeneralRows();
+  populateCourseFilter();
   restoreToggleButton();
   const { data } = await supabaseClient.auth.getSession();
   currentUser = data.session?.user || null;
