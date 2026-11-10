@@ -4,6 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UNINCCA Tracker</title>
+
+<dialog id="note-dialog" aria-labelledby="note-title">
+  <h3 id="note-title">Nota</h3>
+  <div class="note-sub" id="note-sub"></div>
+  <textarea id="note-text" maxlength="2000" placeholder="Escribe tu nota privada (máx. 2000 caracteres)"></textarea>
+  <div class="note-msg" id="note-msg" role="status"></div>
+  <div class="note-actions">
+    <button type="button" class="auth-btn" onclick="deleteNote()">Borrar</button>
+    <button type="button" class="auth-btn" onclick="document.getElementById('note-dialog').close()">Cancelar</button>
+    <button type="button" class="auth-btn primary" id="note-save" onclick="saveNote()">Guardar</button>
+  </div>
+</dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
@@ -481,6 +493,19 @@
     font-size: 12px;
     color: var(--muted);
   }
+
+  /* --- notas privadas --- */
+  td.note-cell, tr.done td.note-cell { opacity: 1 !important; text-decoration: none !important; white-space: nowrap; }
+  .note-btn { border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.05); color: var(--muted); border-radius: 999px; padding: 5px 11px; cursor: pointer; font-size: 0.78rem; }
+  .note-btn:hover { border-color: var(--accent2); color: var(--text); }
+  .note-btn.has { border-color: var(--accent); color: var(--accent); background: rgba(110,231,183,0.10); }
+  dialog#note-dialog { background: var(--card); color: var(--text); border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; width: min(520px, calc(100% - 32px)); padding: 20px; }
+  dialog#note-dialog::backdrop { background: rgba(0,0,0,0.6); }
+  #note-dialog h3 { margin: 0 0 4px; font-size: 1rem; }
+  #note-dialog .note-sub { color: var(--muted); font-size: 0.8rem; margin-bottom: 12px; }
+  #note-dialog textarea { width: 100%; min-height: 150px; resize: vertical; background: #0f1117; color: var(--text); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 10px; font: inherit; font-size: 0.9rem; }
+  #note-dialog .note-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; flex-wrap: wrap; }
+  #note-dialog .note-msg { color: var(--muted); font-size: 0.78rem; margin-top: 8px; min-height: 1em; }
 </style>
 </head>
 <body>
@@ -524,7 +549,7 @@
   <div class="auth-main">
     <div class="auth-title">Estados privados por estudiante</div>
     <div class="auth-status" id="auth-status"><span class="sync-dot off">●</span> Sin sesión: usando respaldo local de este navegador.</div>
-    <div class="access-note" id="access-note">Vista pública: solo se muestra la sección General. Las secciones por materia están disponibles únicamente para Victor.</div>
+    <div class="access-note" id="access-note">Vista pública: solo se muestra la sección General. Con tu cuenta @unincca.edu.co guardas tu propio estado y tus notas, visibles solo para ti. Las secciones por materia (basadas en la cuenta de Victor) son solo para él.</div>
   </div>
   <div class="auth-actions">
     <button class="auth-btn primary" id="google-login-btn" onclick="signInWithGoogle()">Entrar con Google</button>
@@ -607,7 +632,7 @@
     </div>
     <div class="card">
       <table>
-        <thead><tr><th></th><th>Materia</th><th>Actividad</th><th>Cierre</th><th>Estado</th></tr></thead>
+        <thead><tr><th></th><th>Materia</th><th>Actividad</th><th>Cierre</th><th>Estado</th><th>Notas</th></tr></thead>
         <tbody id="general-tbody">
 <tr data-uid="PROGRAMACION_BASICA__0">
       <td><select class="status-select" data-uid="PROGRAMACION_BASICA__0" onchange="onStatusChange(this)"><option value="pendiente">Pendiente</option><option value="hecho">Hecho</option></select></td>
@@ -1877,8 +1902,17 @@ function rowInfo(row) {
 }
 
 function enhanceGeneralRows() {
-  const labels = ['Estado', 'Materia', 'Actividad', 'Cierre', 'Detalle'];
+  const labels = ['Estado', 'Materia', 'Actividad', 'Cierre', 'Detalle', 'Notas'];
   document.querySelectorAll('#general-tbody tr:not(.filtered-empty-row)').forEach(row => {
+    const uid = row.dataset.uid;
+    if (uid && !row.querySelector('td.note-cell')) {
+      const td = document.createElement('td');
+      td.className = 'note-cell';
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'note-btn'; b.dataset.uid = uid; b.textContent = '📝 Nota';
+      b.addEventListener('click', () => openNote(uid));
+      td.appendChild(b); row.appendChild(td);
+    }
     row.querySelectorAll('td').forEach((td, idx) => td.setAttribute('data-label', labels[idx] || ''));
   });
 }
@@ -1988,9 +2022,9 @@ function requireUninccaEmail(email) {
 async function signInWithGoogle() {
   const { error } = await supabaseClient.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.href.split('#')[0] }
+    options: { redirectTo: window.location.href.split('#')[0], queryParams: { hd: 'unincca.edu.co', prompt: 'select_account' } }
   });
-  if (error) alert('No pude iniciar con Google todavía: ' + error.message + '\nUsa el enlace mágico por correo mientras queda listo Google OAuth.');
+  if (error) alert('No pude iniciar con Google: ' + error.message + '\nPuedes usar el enlace por correo.');
 }
 
 async function signInWithEmail() {
@@ -2012,6 +2046,7 @@ async function signOut() {
   await supabaseClient.auth.signOut();
   currentUser = null;
   remoteStatuses = [];
+  remoteNotes = {};
   updateAuthUi();
   restoreChecks();
 }
@@ -2093,6 +2128,7 @@ async function onStatusChange(el) {
 }
 
 function restoreChecks() {
+  refreshNoteButtons();
   const localChecks = loadChecks();
   const hiding = isHidingDone();
   document.querySelectorAll('.status-select').forEach(el => {
@@ -2140,21 +2176,98 @@ function showPanel(key) {
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
+
+// ---------------- Notas privadas por actividad ----------------
+const NOTES_KEY = 'unincca_tracker_notes_v1';
+let remoteNotes = {};
+let noteUid = null;
+
+function loadLocalNotes() { try { return JSON.parse(localStorage.getItem(NOTES_KEY)) || {}; } catch (e) { return {}; } }
+function saveLocalNotes(n) { localStorage.setItem(NOTES_KEY, JSON.stringify(n)); }
+function currentNote(uid) { return currentUser ? (remoteNotes[uid] || '') : (loadLocalNotes()[uid] || ''); }
+
+function refreshNoteButtons() {
+  document.querySelectorAll('.note-btn').forEach(b => {
+    const t = currentNote(b.dataset.uid);
+    b.classList.toggle('has', !!t);
+    b.textContent = t ? '📝 Ver nota' : '📝 Nota';
+    b.title = t ? t.slice(0, 120) : 'Añadir una nota privada';
+  });
+}
+
+async function fetchRemoteNotes() {
+  remoteNotes = {};
+  if (!currentUser) return;
+  const { data, error } = await supabaseClient.from('activity_notes').select('uid,note');
+  if (error) { console.warn('Supabase notes fetch failed', error); return; }
+  (data || []).forEach(r => { remoteNotes[r.uid] = r.note; });
+}
+
+function openNote(uid) {
+  noteUid = uid;
+  const row = [...document.querySelectorAll('#general-tbody tr')].find(r => r.dataset.uid === uid);
+  const cells = row ? row.querySelectorAll('td') : [];
+  document.getElementById('note-title').textContent = (cells[2]?.innerText || 'Actividad').trim();
+  document.getElementById('note-sub').textContent = (cells[1]?.innerText || '').trim() + (currentUser ? ' · se guarda en tu cuenta, solo tú la ves' : ' · sin sesión: se guarda solo en este navegador');
+  document.getElementById('note-text').value = currentNote(uid);
+  document.getElementById('note-msg').textContent = '';
+  document.getElementById('note-dialog').showModal();
+  document.getElementById('note-text').focus();
+}
+
+async function saveNote() {
+  const uid = noteUid, text = document.getElementById('note-text').value.trim().slice(0, 2000);
+  const msg = document.getElementById('note-msg'), btn = document.getElementById('note-save');
+  if (!currentUser) {
+    const n = loadLocalNotes();
+    if (text) n[uid] = text; else delete n[uid];
+    saveLocalNotes(n); refreshNoteButtons(); document.getElementById('note-dialog').close(); return;
+  }
+  btn.disabled = true; msg.textContent = 'Guardando…';
+  let error;
+  if (text) {
+    ({ error } = await supabaseClient.from('activity_notes').upsert(
+      { user_id: currentUser.id, user_email: currentUser.email, uid, note: text, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id,uid' }));
+  } else {
+    ({ error } = await supabaseClient.from('activity_notes').delete().eq('uid', uid).eq('user_id', currentUser.id));
+  }
+  btn.disabled = false;
+  if (error) { msg.textContent = 'No pude guardar: ' + error.message; return; }
+  if (text) remoteNotes[uid] = text; else delete remoteNotes[uid];
+  refreshNoteButtons(); document.getElementById('note-dialog').close();
+}
+
+async function deleteNote() { document.getElementById('note-text').value = ''; await saveNote(); }
+
+// Solo cuentas institucionales: si entra con otra, se cierra la sesión.
+async function enforceInstitutional() {
+  if (currentUser && !requireUninccaEmail(currentUser.email)) {
+    alert('Este tracker es solo para cuentas @unincca.edu.co. Cerré la sesión de ' + currentUser.email + '.');
+    await supabaseClient.auth.signOut();
+    currentUser = null; remoteStatuses = []; remoteNotes = {};
+  }
+}
+
 async function initAuthAndStatuses() {
   enhanceGeneralRows();
   populateCourseFilter();
   restoreToggleButton();
   const { data } = await supabaseClient.auth.getSession();
   currentUser = data.session?.user || null;
+  await enforceInstitutional();
   updateAuthUi();
   applyAccessVisibility();
   await fetchRemoteStatuses();
+  await fetchRemoteNotes();
   restoreChecks();
   supabaseClient.auth.onAuthStateChange(async (_event, session) => {
     currentUser = session?.user || null;
+    await enforceInstitutional();
     updateAuthUi();
     applyAccessVisibility();
     await fetchRemoteStatuses();
+    await fetchRemoteNotes();
     restoreChecks();
   });
 }
